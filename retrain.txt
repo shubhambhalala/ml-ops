@@ -1,0 +1,23 @@
+if sudo docker ps | grep cnnmodel
+then
+ln=$(sudo grep -n -r "Dense(1024,activation='relu')" * | cut -d ":" -f 2)
+lt=$(sudo grep -n -r "Dense(1024,activation='relu')" * | cut -d ":" -f 3)
+fi=$(sudo grep -r "Dense(1024,activation='relu')" * | cut -d ":" -f 1)
+let "ln+=1" 
+hp="    top_model = Dense(512,activation='relu')(top_model)"
+sudo sed -i -e $ln'i\\'"$hp" /mlops_project/download_classify/cnn/$fi
+sudo sed -i -e $ln'i'\\"$lt" /mlops_project/download_classify/cnn/$fi
+fe=$(sudo grep -r Conv2D * | cut -d ":" -f 1)
+sudo docker container exec cnnmodel python /root/$fe
+elif sudo docker ps | grep annmodel
+then
+ln=$(sudo grep -n -r "Dense(1024,activation='relu')" * | cut -d ":" -f 1)
+lt=$(sudo grep -n -r "Dense(1024,activation='relu')" * | cut -d ":" -f 2)
+fi=$(sudo grep -r "Dense(1024,activation='relu')" * | cut -d ":" -f 1)
+sed -i -e $ln'i\\'"$hp" /mlops_project/download_classify/cnn/$fi
+sed -i -e $ln'i\\'"$lt" /mlops_project/download_classify/cnn/$fi
+fe=$(sudo grep -r Dense * && ! sudo grep -r Conv2D * | cut -d ":" -f 1)
+sudo docker container exec annmodel python /root/$fe
+else
+echo "Something is wrong with the code"
+fi

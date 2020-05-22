@@ -1,0 +1,20 @@
+sudo cp -rf * /mlops_project/download_classify/
+
+if sudo grep -r Conv2D *
+then
+fe=$(sudo grep -r Conv2D * | cut -d ":" -f 1)
+sudo cp -rf $fe /mlops_project/download_classify/cnn
+sudo docker container run -dit -v /mlops_project/download_classify/cnn:/root/ --name cnnmodel tensorflow/tensorflow:v1
+elif sudo grep -r Dense * && ! sudo grep -r Conv2D *
+then
+fe=$(sudo grep -r Dense * && ! sudo grep -r Conv2D * | cut -d ":" -f 1)
+sudo cp -rf $fe /mlops_project/download_classify/ann
+sudo docker container run -dit -v /mlops_project/download_classify/ann:/root/ --name annmodel tensorflow/tensorflow:v1
+elif sudo grep -r sklearn
+then
+fe=$(sudo grep -r sklearn | cut -d ":" -f 1)
+sudo cp -rf $fe /mlops_project/download_classify/lcr
+sudo docker container run -dit -v /mlops_project/download_classify/lcr:/root/ --name lcrmodel lcrpython
+else
+echo "We don't support this model"
+fi

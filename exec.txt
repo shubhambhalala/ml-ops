@@ -1,0 +1,15 @@
+if sudo docker ps | grep cnnmodel
+then
+fe=$(sudo grep -r Conv2D * | cut -d ":" -f 1)
+sudo docker container exec cnnmodel python /root/$fe
+elif sudo docker ps | grep annmodel
+then
+fe=$(sudo grep -r Dense * && ! sudo grep -r Conv2D * | cut -d ":" -f 1)
+sudo docker container exec annmodel python /root/$fe
+elif sudo docker ps | grep lcrmodel
+then
+fe=$(sudo grep -r sklearn * | cut -d ":" -f 1)
+sudo docker container exec lcrmodel python /root/$fe
+else
+echo "Something is wrong check container"
+fi

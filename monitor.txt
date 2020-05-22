@@ -1,0 +1,27 @@
+if sudo grep -r Conv2D /var/lib/jenkins/workspace/download_classify/* 
+then
+if sudo docker container ls | grep cnnmodel
+then
+echo "Alright"
+else
+sudo docker container run -dit -v /mlops_project/download_classify/cnn:/root/ --name cnnmodel tensorflow/tensorflow:v1
+fi
+elif sudo grep -r !Conv2D /var/lib/jenkins/workspace/download_classify/* && Dense /var/lib/jenkins/workspace/download_classify/*
+then
+if sudo docker container ls | grep annmodel
+then
+echo "Alright"
+else
+sudo docker container run -dit -v /mlops_project/download_classify/ann:/root/ --name annmodel tensorflow/tensorflow:v1
+fi
+elif sudo grep -r sklearn /var/lib/jenkins/workspace/*
+then
+if sudo docker container ls | grep lrcmodel
+then
+echo "Alright"
+else
+sudo docker container run -dit -v /mlops_project/download_classify/lrc:/root/ --name lrcmodel lrcpython
+fi
+else
+echo "We don't recognize this coding language"
+fi
